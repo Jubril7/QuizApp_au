@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.IOException;
 
 @RestController
-@RequestMapping("/api/v1/auth")
+@RequestMapping("/api/v1/auth/")
 @RequiredArgsConstructor
 public class AuthController {
 
@@ -35,7 +35,7 @@ public class AuthController {
     private final UserDetailsServiceImpl userDetailsService;
 
 
-    @PostMapping("/signup")
+    @PostMapping("signup")
     public ResponseEntity<?> signUp(@RequestBody UserDTO userDTO) {
         UserResponseDTO createdUser = authService.signUp(userDTO);
         if (createdUser == null){
@@ -43,7 +43,7 @@ public class AuthController {
         }
         return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
     }
-    @PostMapping("/login")
+    @PostMapping("login")
     public AuthenticationResponse createAuthenticationToken(@RequestBody LoginDTO loginDTO, HttpServletResponse response) throws BadCredentialsException, DisabledException, UsernameNotFoundException, IOException, IOException {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginDTO.getUsername(), loginDTO.getPassword()));
@@ -60,7 +60,7 @@ public class AuthController {
     }
 
 
-    @PostMapping("/logout")
+    @PostMapping("logout")
     public void logout() {
         authService.logout();
     }

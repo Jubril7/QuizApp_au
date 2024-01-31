@@ -40,23 +40,4 @@ public class AuthServiceImpl implements AuthService {
     public void logout() {
 
     }
-
-//    @Override
-//    public AuthenticationResponse loginUser(LoginDTO loginDTO) {
-//        authenticationManager.authenticate(
-//                new UsernamePasswordAuthenticationToken(
-//                        loginDTO.getUsername(),
-//                        loginDTO.getPassword()
-//                )
-//        );
-//        User users1 = userRepository.findByUsernameIgnoreCase(loginDTO.getUsername())
-//                .orElseThrow(() -> new RuntimeException("User not found with email: " + loginDTO.getUsername()));
-//        String jwtToken = jwtService.generateToken(users1);
-//        revokeAllToken(users1);
-//
-//        saveUserToken(users1, jwtToken);
-//        return AuthenticationResponse.builder()
-//                .token(jwtToken)
-//                .build();
-//    }
 }

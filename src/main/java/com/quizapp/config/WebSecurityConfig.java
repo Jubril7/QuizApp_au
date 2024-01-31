@@ -2,6 +2,7 @@ package com.quizapp.config;
 
 import com.quizapp.util.JwtRequestFilter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,6 +17,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
@@ -23,17 +25,20 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class WebSecurityConfig {
     private final JwtRequestFilter requestFilter;
     private final AuthenticationProvider authenticationProvider;
+    private final CorsConfigurationSource corsConfigurationSource;
+
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
         .csrf(AbstractHttpConfigurer::disable)
         .authorizeHttpRequests(
-                auth -> auth.requestMatchers( "/login", "/sign-up").permitAll()
+                auth -> auth.requestMatchers( "/login", "/signup","/api/v1","/api/v1/auth/**").permitAll()
                         .anyRequest().authenticated())
                         .sessionManagement(session-> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                         .authenticationProvider(authenticationProvider)
-                        .addFilterBefore(requestFilter, UsernamePasswordAuthenticationFilter.class));
+                        .addFilterBefore(requestFilter, UsernamePasswordAuthenticationFilter.class);
+        http.cors().configurationSource(corsConfigurationSource);
 
         return http.build();
     }
@@ -46,5 +51,11 @@ public class WebSecurityConfig {
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
+    }
+
+    @Bean
+    public AuthenticationProvider authenticationProvider(){
+        return new DaoAuthenticationProvider();
+
     }
 }

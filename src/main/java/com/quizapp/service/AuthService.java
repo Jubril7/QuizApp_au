@@ -10,5 +10,5 @@ public interface AuthService {
 
     UserResponseDTO signUp(UserDTO userDTO);
     void logout();
-//    AuthenticationResponse loginUser(LoginDTO loginDTO);
+
 }
