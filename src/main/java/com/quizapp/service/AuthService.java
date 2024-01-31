@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 
 public interface AuthService {
 
-    ResponseEntity<UserResponseDTO> signUp(UserDTO userDTO);
+    UserResponseDTO signUp(UserDTO userDTO);
     void logout();
-    AuthenticationResponse loginUser(LoginDTO loginDTO);
+//    AuthenticationResponse loginUser(LoginDTO loginDTO);
 }

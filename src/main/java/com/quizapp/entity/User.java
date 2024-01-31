@@ -25,6 +25,8 @@ public class User implements UserDetails {
     private String username;
     @Column(nullable = false)
     private String phoneNumber;
+    @Column(nullable = false)
+    private String password;
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;
