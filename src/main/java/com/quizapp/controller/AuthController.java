@@ -44,7 +44,7 @@ public class AuthController {
         return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
     }
     @PostMapping("login")
-    public AuthenticationResponse createAuthenticationToken(@RequestBody LoginDTO loginDTO, HttpServletResponse response) throws BadCredentialsException, DisabledException, UsernameNotFoundException, IOException, IOException {
+    public AuthenticationResponse login(@RequestBody LoginDTO loginDTO, HttpServletResponse response) throws BadCredentialsException, DisabledException, UsernameNotFoundException, IOException, IOException {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginDTO.getUsername(), loginDTO.getPassword()));
         } catch (BadCredentialsException e) {

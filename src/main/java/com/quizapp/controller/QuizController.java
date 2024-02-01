@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/auth/")
 public class QuizController {
+
     private final QuestionService questionService;
 
     @PostMapping("add-question")

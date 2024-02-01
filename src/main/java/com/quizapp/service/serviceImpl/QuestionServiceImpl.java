@@ -5,8 +5,6 @@ import com.quizapp.entity.Question;
 import com.quizapp.repository.QuestionRepository;
 import com.quizapp.service.QuestionService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -25,7 +23,6 @@ public class QuestionServiceImpl implements QuestionService {
         question.setAnswer(questionDTO.getAnswer());
         question.setDifficulty(questionDTO.getDifficulty());
         question.setCategory(questionDTO.getCategory());
-        question.setTimestamp(questionDTO.getTimestamp());
         questionRepository.save(question);
         return questionDTO;
     }

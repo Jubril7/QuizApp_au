@@ -9,6 +9,7 @@ import com.quizapp.repository.UserRepository;
 import com.quizapp.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -27,6 +28,7 @@ public class AuthServiceImpl implements AuthService {
         user.setFirstName(userDTO.getFirstName());
         user.setLastName(userDTO.getLastName());
         user.setUsername(userDTO.getUsername());
+        user.setPhoneNumber(userDTO.getPhoneNumber());
         user.setPassword(new BCryptPasswordEncoder().encode(userDTO.getPassword()));
         User createdUser = userRepository.save(user);
         UserResponseDTO userResponseDTO = new UserResponseDTO();

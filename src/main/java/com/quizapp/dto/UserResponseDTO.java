@@ -12,6 +12,4 @@ import org.springframework.http.HttpStatus;
 public class UserResponseDTO {
     private Long id;
     private String username;
-    private String message;
-    private HttpStatus httpStatus;
 }
