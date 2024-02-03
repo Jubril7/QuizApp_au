@@ -24,19 +24,11 @@ import java.util.Map;
 @RequestMapping("/api/v1/auth/")
 public class QuizController {
 
-    private final QuestionService questionService;
     private final QuizService quizService;
     private final UserDetailsServiceImpl userDetailsService;
     private final UserScoreService userScoreService;
 
-    @PostMapping("add-question")
-    public ResponseEntity<?> createQuiz(@RequestBody QuestionDTO questionDTO) {
-        QuestionDTO newQuestion = questionService.createQuiz(questionDTO);
-        if(newQuestion == null) {
-            return new ResponseEntity<>("Question not created", HttpStatus.BAD_REQUEST);
-        }
-        return new ResponseEntity<>(newQuestion, HttpStatus.CREATED);
-    }
+
 
     @PostMapping("submit-answers")
     public ResponseEntity<?> submitAnswers(@RequestBody UserAnswersDTO userAnswersDTO) {
@@ -51,11 +43,7 @@ public class QuizController {
         return ResponseEntity.ok("Quiz submitted successfully. Your score: " + score);
     }
 
-    @GetMapping("/all-questions")
-    public ResponseEntity<List<Question>> getAllQuestions() {
-        List<Question> allQuestions = questionService.getAllQuestion();
-        return new ResponseEntity<>(allQuestions, HttpStatus.OK);
-    }
+
 
     @GetMapping("/quiz-scores")
     public ResponseEntity<?> getQuizScores() {

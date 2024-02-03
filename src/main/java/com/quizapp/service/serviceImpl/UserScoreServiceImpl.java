@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 @Service
 @RequiredArgsConstructor
-public class UserScoreImpl implements UserScoreService {
+public class UserScoreServiceImpl implements UserScoreService {
 
     private final UserScoreRepository userScoreRepository;
 
@@ -28,7 +28,6 @@ public class UserScoreImpl implements UserScoreService {
                 dto.setScore(userScore.getScore());
                 userScoreDTOs.add(dto);
             }
-
             return userScoreDTOs;
         } catch (Exception e) {
             throw new ServiceException("Error retrieving quiz scores", e);
