@@ -65,11 +65,11 @@ public class AuthServiceImpl implements AuthService {
             response.sendError(HttpServletResponse.SC_NOT_FOUND, "User is not activated");
             return null;
         }
-        final UserDetails userDetails = userDetailsService.loadUserByUsername(loginDTO.getUsername());
-        final String jwt = jwtUtil.generateToken(userDetails);
-        revokeAllToken((User) userDetails);
+        final User user1 = userDetailsService.loadUserByUsername(loginDTO.getUsername());
+        final String jwt = jwtUtil.generateToken(user1);
+        revokeAllToken(user1);
 
-        saveUserToken((User) userDetails, jwt);
+        saveUserToken(user1, jwt);
         return AuthenticationResponse.builder()
                 .token(jwt)
                 .build();
