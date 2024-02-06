@@ -14,6 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
 @Configuration
@@ -27,16 +28,27 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-        .csrf(AbstractHttpConfigurer::disable)
-        .authorizeHttpRequests(
-                auth -> auth.requestMatchers( "/login", "/signup","/api/v1/auth/**").permitAll()
-                        .anyRequest().authenticated())
-                        .sessionManagement(session-> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                        .addFilterBefore(requestFilter, UsernamePasswordAuthenticationFilter.class);
-        http.cors().configurationSource(corsConfigurationSource);
+                .csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(
+                        auth -> auth.requestMatchers("/login", "/signup", "/api/v1/auth/**").permitAll()
+                                .anyRequest().authenticated())
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(requestFilter, UsernamePasswordAuthenticationFilter.class);
+
+        http.cors(cors -> {
+            cors.configurationSource(request -> {
+                CorsConfiguration corsConfig = new CorsConfiguration();
+                corsConfig.addAllowedOrigin("*");
+                corsConfig.addAllowedMethod("*");
+                corsConfig.addAllowedHeader("*");
+                corsConfig.setAllowCredentials(true);
+                return corsConfig;
+            });
+        });
 
         return http.build();
     }
+
 
     @Bean
     public PasswordEncoder passwordEncoder() {
