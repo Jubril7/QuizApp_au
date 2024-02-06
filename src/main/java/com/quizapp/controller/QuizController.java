@@ -34,7 +34,7 @@ public class QuizController {
 
 
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        User user = (User) userDetailsService.loadUserByUsername(userDetails.getUsername());
+        User user = userDetailsService.loadUserByUsername(userDetails.getUsername());
 
         Map<Long, String> userAnswers = userAnswersDTO.getUserAnswers();
         int score = quizService.evaluateAnswers(userAnswers, user);
@@ -49,7 +49,7 @@ public class QuizController {
     public ResponseEntity<?> getQuizScores() {
         try {
             UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            User user = (User) userDetailsService.loadUserByUsername(userDetails.getUsername());
+            User user = userDetailsService.loadUserByUsername(userDetails.getUsername());
 
             List<UserScoreDTO> userScores = userScoreService.getUserScores(user);
 
