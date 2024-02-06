@@ -1,12 +1,9 @@
 package com.quizapp.controller;
 
-import com.quizapp.dto.QuestionDTO;
 import com.quizapp.dto.UserAnswersDTO;
 import com.quizapp.dto.UserScoreDTO;
-import com.quizapp.entity.Question;
 import com.quizapp.entity.User;
 import com.quizapp.service.Jwt.UserDetailsServiceImpl;
-import com.quizapp.service.QuestionService;
 import com.quizapp.service.QuizService;
 import com.quizapp.service.UserScoreService;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +30,9 @@ public class QuizController {
     @PostMapping("submit-answers")
     public ResponseEntity<?> submitAnswers(@RequestBody UserAnswersDTO userAnswersDTO) {
 
+        System.out.println("Received JSON: " + userAnswersDTO.toString());
+
+
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = (User) userDetailsService.loadUserByUsername(userDetails.getUsername());
 
@@ -45,7 +45,7 @@ public class QuizController {
 
 
 
-    @GetMapping("/quiz-scores")
+    @GetMapping("quiz-scores")
     public ResponseEntity<?> getQuizScores() {
         try {
             UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
