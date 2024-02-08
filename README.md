@@ -17,7 +17,7 @@ Before setting up and running the backend, ensure you have the following install
 
 #### Installation and Configuration
 1. Clone this repository to your local machine:
-git clone https://github.com/Jubril7/quiz-app-backend-spring-boot.git
+git clone https://github.com/Jubril7/QuizApp_au.git
 
 2. Navigate to the project directory:
 cd quiz-app-backend-spring-boot
@@ -30,7 +30,7 @@ spring.datasource.password=your-password
 server.port=your-server-port
 Replace your-database-name, your-username, and your-password with your actual PostgreSQL database details.
 5. Save the changes to the application.properties file.
-   Replace `your-database-name`, `your-username`, and `your-password` with your actual PostgreSQL database details.
+   Replace `your-database-name`, `your-username`, `your-password` with your actual PostgreSQL database details.
 5. Save the changes to the `application.properties` file.
 
 #### How to Start the Spring Boot Application
@@ -44,7 +44,6 @@ mvn clean install
 mvn spring-boot:run
 **The backend server will start running at http://localhost:your-server-port**
 
-5. The backend server will start running at http://localhost:8080.
 
 ### Functionality of the Backend
 
