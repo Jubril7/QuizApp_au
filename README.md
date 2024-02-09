@@ -30,8 +30,8 @@ spring.datasource.password=your-password
 server.port=your-server-port
 Replace your-database-name, your-username, and your-password with your actual PostgreSQL database details.
 5. Save the changes to the application.properties file.
-   Replace `your-database-name`, `your-username`, `your-password` with your actual PostgreSQL database details.
-5. Save the changes to the `application.properties` file.
+   Replace `your-database-name`, `your-username`, `your-password`, and `your-server-port`' with your actual PostgreSQL database details.
+6. Save the changes to the `application.properties` file.
 
 #### How to Start the Spring Boot Application
 1. Open a terminal or command prompt.

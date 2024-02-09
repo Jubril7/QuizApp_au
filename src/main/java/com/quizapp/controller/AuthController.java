@@ -5,7 +5,6 @@ import com.quizapp.dto.LoginDTO;
 import com.quizapp.dto.UserDTO;
 import com.quizapp.dto.UserResponseDTO;
 import com.quizapp.service.AuthService;
-
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -39,7 +38,6 @@ public class AuthController {
     @PostMapping("login")
     public AuthenticationResponse login(@RequestBody LoginDTO loginDTO, HttpServletResponse response) throws BadCredentialsException, DisabledException, UsernameNotFoundException, IOException {
             return authService.login(loginDTO,response);
-
     }
 
     @PostMapping("logout")

@@ -1,5 +1,6 @@
 package com.quizapp.entity;
 
+import com.quizapp.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -30,9 +31,11 @@ public class User implements UserDetails {
     private String phoneNumber;
     @Column(nullable = false)
     private String password;
+    @Enumerated(EnumType.STRING)
+    private Role role;
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(username));
+        return List.of(new SimpleGrantedAuthority(role.name()));
     }
 
 

@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 
-import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
@@ -28,8 +27,10 @@ public class Question {
     private String option4;
     @Column(nullable = false)
     private String answer;
+    //could turn out to be an enum
     @Column(nullable = false)
     private String category;
+    //could be enum too
     @Column(nullable = false)
     private String difficulty;
 

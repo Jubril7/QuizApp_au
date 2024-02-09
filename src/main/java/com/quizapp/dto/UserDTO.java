@@ -1,5 +1,6 @@
 package com.quizapp.dto;
 
+import com.quizapp.enums.Role;
 import lombok.*;
 
 @AllArgsConstructor
@@ -17,6 +18,8 @@ public class UserDTO {
     private String phoneNumber;
 
     private String password;
+
+    private Role role;
 
 
 }

@@ -12,4 +12,5 @@ public class QuestionDTO {
     private String answer;
     private String category;
     private String difficulty;
+
 }

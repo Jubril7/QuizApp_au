@@ -47,6 +47,7 @@ public class AuthServiceImpl implements AuthService {
         user.setUsername(userDTO.getUsername());
         user.setPhoneNumber(userDTO.getPhoneNumber());
         user.setPassword(new BCryptPasswordEncoder().encode(userDTO.getPassword()));
+        user.setRole(userDTO.getRole());
         User createdUser = userRepository.save(user);
         UserResponseDTO userResponseDTO = new UserResponseDTO();
         userResponseDTO.setId(createdUser.getId());
@@ -67,6 +68,7 @@ public class AuthServiceImpl implements AuthService {
         final User user1 = userDetailsService.loadUserByUsername(loginDTO.getUsername());
         final String jwt = jwtUtil.generateToken(user1);
         revokeAllToken(user1);
+
 
         saveUserToken(user1, jwt);
         return AuthenticationResponse.builder()

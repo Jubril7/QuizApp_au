@@ -18,7 +18,7 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/auth/")
+@RequestMapping("/api/v1/quiz/")
 public class QuizController {
 
     private final QuizService quizService;
@@ -42,8 +42,6 @@ public class QuizController {
 
         return ResponseEntity.ok("Quiz submitted successfully. Your score: " + score);
     }
-
-
 
     @GetMapping("quiz-scores")
     public ResponseEntity<?> getQuizScores() {
