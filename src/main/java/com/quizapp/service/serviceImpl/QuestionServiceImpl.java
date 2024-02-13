@@ -42,6 +42,7 @@ public class QuestionServiceImpl implements QuestionService {
         question.setAnswer(questionDTO.getAnswer());
         question.setDifficulty(questionDTO.getDifficulty());
         question.setCategory(questionDTO.getCategory());
+        question.setQuestionType(questionDTO.getQuestionType());
         questionRepository.save(question);
         return questionDTO;
     }

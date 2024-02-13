@@ -1,5 +1,6 @@
 package com.quizapp.dto;
 
+import com.quizapp.enums.Type;
 import lombok.Data;
 
 @Data
@@ -12,5 +13,6 @@ public class QuestionDTO {
     private String answer;
     private String category;
     private String difficulty;
+    private Type questionType;
 
 }
