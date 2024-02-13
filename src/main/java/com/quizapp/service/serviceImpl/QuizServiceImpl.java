@@ -3,7 +3,6 @@ package com.quizapp.service.serviceImpl;
 import com.quizapp.entity.Question;
 import com.quizapp.entity.User;
 import com.quizapp.entity.UserScore;
-import com.quizapp.enums.Type;
 import com.quizapp.repository.UserScoreRepository;
 import com.quizapp.service.QuestionService;
 import com.quizapp.service.QuizService;
@@ -11,11 +10,9 @@ import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
-import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -30,34 +27,41 @@ public class QuizServiceImpl implements QuizService {
         int score = 0;
 
         List<Question> questions = questionService.getAllQuestion();
-        for(Question question : questions) {
+        for (Question question : questions) {
             Long questionId = question.getId();
 
-            if(userAnswers.containsKey(questionId)) {
+            if (userAnswers.containsKey(questionId)) {
+                List<String> userAnswerList = List.of(userAnswers.get(questionId));
 
-                List<String> userAnswerList = Collections.singletonList(userAnswers.get(questionId).trim());
-
-                String correctAnswer = question.getAnswer();
-
-                if (question.getQuestionType() == Type.TRUE_FALSE || question.getQuestionType() == Type.SINGLE_CHOICE) {
-                    String userAnswer = userAnswerList.get(0);
-                    if(userAnswer.equals(correctAnswer)) {
-                        score++;
+                switch (question.getQuestionType()) {
+                    case TRUE_FALSE, SINGLE_CHOICE ->
+                            score += evaluateSingleChoice(userAnswerList, question.getAnswer());
+                    case MULTI_CHOICE -> score += evaluateMultiChoice(userAnswerList, question.getAnswer());
+                    default -> {
                     }
-                }
-                else if (question.getQuestionType() == Type.MULTI_CHOICE) {
-                    List<String> newCorrectAnswer = List.of(correctAnswer);
-                    if (userAnswerList.containsAll(newCorrectAnswer)) {
-                        score++;
-                    }
+
                 }
             }
         }
-        UserScore userScore = new UserScore();
-        userScore.setUser(user);
-        userScore.setScore(score);
+        UserScore userScore = UserScore.builder()
+                .user(user)
+                .score(score)
+                .build();
         userScoreRepository.save(userScore);
 
         return score;
+    }
+
+    private int evaluateSingleChoice(List<String> userAnswerList, String correctAnswer) {
+        return userAnswerList.stream()
+                .filter(userAnswer -> userAnswer.equals(correctAnswer))
+                .findAny()
+                .map(ignored -> 1)
+                .orElse(0);
+    }
+
+    private int evaluateMultiChoice(List<String> userAnswerList, String correctAnswer) {
+        List<String> newCorrectAnswer = List.of(correctAnswer);
+        return new HashSet<>(userAnswerList).containsAll(newCorrectAnswer) ? 1 : 0;
     }
 }

@@ -19,6 +19,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -57,25 +58,24 @@ public class AuthServiceImpl implements AuthService {
                 .build();
     }
 
-    public AuthenticationResponse login(LoginDTO loginDTO, HttpServletResponse response) throws BadCredentialsException, DisabledException, UsernameNotFoundException, IOException {
+    public AuthenticationResponse login(LoginDTO loginDTO, HttpServletResponse response) throws IOException {
         try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginDTO.getUsername(), loginDTO.getPassword()));
-        } catch (BadCredentialsException e) {
-            throw new BadCredentialsException("Incorrect username or password!");
-        } catch (DisabledException disabledException) {
-            response.sendError(HttpServletResponse.SC_NOT_FOUND, "User is not activated");
+            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginDTO.getUsername(), loginDTO.getPassword()));
+            User user = (User) authentication.getPrincipal();
+            String jwt = jwtUtil.generateToken(user);
+            revokeAllToken(user);
+            saveUserToken(user, jwt);
+            return AuthenticationResponse.builder()
+                    .token(jwt)
+                    .build();
+        } catch (AuthenticationException e) {
+            if (e instanceof BadCredentialsException) {
+                throw new BadCredentialsException("Incorrect username or password!");
+            } else if (e instanceof DisabledException) {
+                response.sendError(HttpServletResponse.SC_NOT_FOUND, "User is not activated");
+            }
             return null;
         }
-        final User user1 = userDetailsService.loadUserByUsername(loginDTO.getUsername());
-        final String jwt = jwtUtil.generateToken(user1);
-        revokeAllToken(user1);
-
-
-        saveUserToken(user1, jwt);
-        return AuthenticationResponse.builder()
-                .token(jwt)
-                .build();
-
     }
 
 
@@ -83,14 +83,11 @@ public class AuthServiceImpl implements AuthService {
     public void logout() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {
-            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            String email = userDetails.getUsername();
-
-            User user = userRepository.findByUsernameIgnoreCase(email).get();
-            System.out.println(user);
-            revokeAllToken(user);
+            String username = ((UserDetails) authentication.getPrincipal()).getUsername();
+            userRepository.findByUsernameIgnoreCase(username).ifPresent(this::revokeAllToken);
         }
     }
+
 
     private void saveUserToken(User savedUser, String jwtToken) {
         Token token = Token.builder()

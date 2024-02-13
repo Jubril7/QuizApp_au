@@ -30,15 +30,11 @@ public class QuizController {
     @PostMapping("submit-answers")
     public ResponseEntity<?> submitAnswers(@RequestBody UserAnswersDTO userAnswersDTO) {
 
-        System.out.println("Received JSON: " + userAnswersDTO.toString());
-
-
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = userDetailsService.loadUserByUsername(userDetails.getUsername());
 
         Map<Long, String> userAnswers = userAnswersDTO.getUserAnswers();
         int score = quizService.evaluateAnswers(userAnswers, user);
-
 
         return ResponseEntity.ok("Quiz submitted successfully. Your score: " + score);
     }

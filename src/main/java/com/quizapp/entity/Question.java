@@ -1,6 +1,5 @@
 package com.quizapp.entity;
 
-import com.quizapp.enums.Role;
 import com.quizapp.enums.Type;
 import jakarta.persistence.*;
 import lombok.*;
@@ -28,7 +27,7 @@ public class Question {
     @Column(nullable = false)
     private String answer;
 
-    //could turn out to be an enum
+    //could be an enum
     @Column(nullable = false)
     private String category;
 

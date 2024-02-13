@@ -7,10 +7,12 @@ import com.quizapp.repository.UserScoreRepository;
 import com.quizapp.service.UserScoreService;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.service.spi.ServiceException;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class UserScoreServiceImpl implements UserScoreService {
@@ -22,17 +24,18 @@ public class UserScoreServiceImpl implements UserScoreService {
         try {
             List<UserScore> userScores = userScoreRepository.findByUser(user);
 
-            List<UserScoreDTO> userScoreDTOs = new ArrayList<>();
-            for (UserScore userScore : userScores) {
-                UserScoreDTO dto = new UserScoreDTO();
-                dto.setScore(userScore.getScore());
-                userScoreDTOs.add(dto);
-            }
-            return userScoreDTOs;
-        } catch (Exception e) {
+            return userScores.stream()
+                    .map(this::mapToDTO)
+                    .collect(Collectors.toList());
+        } catch (DataAccessException e) {
             throw new ServiceException("Error retrieving quiz scores", e);
-
         }
-
     }
+
+    private UserScoreDTO mapToDTO(UserScore userScore) {
+        UserScoreDTO dto = new UserScoreDTO();
+        dto.setScore(userScore.getScore());
+        return dto;
+    }
+
 }

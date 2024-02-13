@@ -32,17 +32,17 @@ public class QuestionServiceImpl implements QuestionService {
         if (!isAdmin) {
             throw new AccessDeniedException("You are not authorized to create a quiz");
         }
-
-        Question question = new Question();
-        question.setQuestionText(questionDTO.getQuestionText());
-        question.setOption1(questionDTO.getOption1());
-        question.setOption2(questionDTO.getOption2());
-        question.setOption3(questionDTO.getOption3());
-        question.setOption4(questionDTO.getOption4());
-        question.setAnswer(questionDTO.getAnswer());
-        question.setDifficulty(questionDTO.getDifficulty());
-        question.setCategory(questionDTO.getCategory());
-        question.setQuestionType(questionDTO.getQuestionType());
+        Question question = Question.builder()
+                .questionText(questionDTO.getQuestionText())
+                .option1(questionDTO.getOption1())
+                .option2(questionDTO.getOption2())
+                .option3(questionDTO.getOption3())
+                .option4(questionDTO.getOption4())
+                .answer(questionDTO.getAnswer())
+                .difficulty(questionDTO.getDifficulty())
+                .category(questionDTO.getCategory())
+                .questionType(questionDTO.getQuestionType())
+                .build();
         questionRepository.save(question);
         return questionDTO;
     }

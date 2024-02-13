@@ -1,10 +1,14 @@
 package com.quizapp.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
+
 
 @Entity
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class UserScore {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,6 +20,5 @@ public class UserScore {
 
     @Column(nullable = false)
     private int score;
-
 
 }
