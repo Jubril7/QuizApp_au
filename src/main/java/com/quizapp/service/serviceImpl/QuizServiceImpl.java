@@ -30,46 +30,29 @@ public class QuizServiceImpl implements QuizService {
         int score = 0;
 
         List<Question> questions = questionService.getAllQuestion();
-        log.info("User Answers Map: " + userAnswers);
-
-
         for(Question question : questions) {
             Long questionId = question.getId();
-            log.info("Question ID: " + questionId);
 
             if(userAnswers.containsKey(questionId)) {
 
                 List<String> userAnswerList = Collections.singletonList(userAnswers.get(questionId).trim());
-                log.info(userAnswerList.toString());
-                log.info("User Answers Map Contains Question ID: " + userAnswers.containsKey(questionId));
 
                 String correctAnswer = question.getAnswer();
-                log.info(correctAnswer);
-                log.info("I got here " + question.getQuestionType());
 
                 if (question.getQuestionType() == Type.TRUE_FALSE || question.getQuestionType() == Type.SINGLE_CHOICE) {
                     String userAnswer = userAnswerList.get(0);
-
-                    log.info(userAnswer);
-
                     if(userAnswer.equals(correctAnswer)) {
                         score++;
                     }
                 }
                 else if (question.getQuestionType() == Type.MULTI_CHOICE) {
-                    log.info("I got here ");
-                    log.info("I got here " + Arrays.stream(correctAnswer.split(","))
-                            .map(String::trim)
-                            .collect(Collectors.toList()));
-                    log.info("I got here " + userAnswerList);
-                    if (userAnswerList.containsAll(Arrays.asList(correctAnswer.trim().split(",")))) {
+                    List<String> newCorrectAnswer = List.of(correctAnswer);
+                    if (userAnswerList.containsAll(newCorrectAnswer)) {
                         score++;
                     }
                 }
             }
         }
-        log.info(String.valueOf(score));
-
         UserScore userScore = new UserScore();
         userScore.setUser(user);
         userScore.setScore(score);

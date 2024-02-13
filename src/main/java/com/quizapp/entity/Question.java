@@ -27,12 +27,15 @@ public class Question {
 
     @Column(nullable = false)
     private String answer;
+
     //could turn out to be an enum
     @Column(nullable = false)
     private String category;
+
     //could be enum too
     @Column(nullable = false)
     private String difficulty;
+
     @Enumerated(EnumType.STRING)
     private Type questionType;
 

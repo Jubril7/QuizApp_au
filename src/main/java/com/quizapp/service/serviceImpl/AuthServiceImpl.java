@@ -41,19 +41,20 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public UserResponseDTO signUp(UserDTO userDTO) {
-        User user = new User();
-        user.setFirstName(userDTO.getFirstName());
-        user.setLastName(userDTO.getLastName());
-        user.setUsername(userDTO.getUsername());
-        user.setPhoneNumber(userDTO.getPhoneNumber());
-        user.setPassword(new BCryptPasswordEncoder().encode(userDTO.getPassword()));
-        user.setRole(userDTO.getRole());
-        User createdUser = userRepository.save(user);
-        UserResponseDTO userResponseDTO = new UserResponseDTO();
-        userResponseDTO.setId(createdUser.getId());
-        userResponseDTO.setUsername(createdUser.getUsername());
-        return userResponseDTO;
+        User user = User.builder()
+                .firstName(userDTO.getFirstName())
+                .lastName(userDTO.getLastName())
+                .username(userDTO.getUsername())
+                .phoneNumber(userDTO.getPhoneNumber())
+                .password(new BCryptPasswordEncoder().encode(userDTO.getPassword()))
+                .role(userDTO.getRole())
+                .build();
 
+        User createdUser = userRepository.save(user);
+        return UserResponseDTO.builder()
+                .id(createdUser.getId())
+                .username(createdUser.getUsername())
+                .build();
     }
 
     public AuthenticationResponse login(LoginDTO loginDTO, HttpServletResponse response) throws BadCredentialsException, DisabledException, UsernameNotFoundException, IOException {
