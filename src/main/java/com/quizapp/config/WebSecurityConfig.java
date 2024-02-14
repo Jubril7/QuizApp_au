@@ -3,6 +3,7 @@ package com.quizapp.config;
 import com.quizapp.util.JwtRequestFilter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,29 +27,42 @@ import static org.springframework.http.HttpMethod.POST;
 public class WebSecurityConfig {
     private final JwtRequestFilter requestFilter;
 
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
-                        auth -> auth.requestMatchers("/login", "/signup", "/api/v1/auth/**","/api/v1/quiz/**","/api/v1/admin/all-question").permitAll()
+                        auth -> auth.requestMatchers("/login", "/signup", "/api/v1/auth/**",
+                                        "/api/v1/quiz/**",
+                                        "/api/v1/admin/all-question",
+                                        "/swagger-ui/**",
+                                        "/v3/api-docs",
+                                        "/v3/api-docs",
+                                        "/v3/api-docs/**",
+                                        "/swagger-ui.html",
+                                        "/swagger-resources/**",
+                                        "/swagger-resources").permitAll()
                                 .requestMatchers(POST, "/api/v1/admin/add-question").hasRole("ADMIN")
                                 .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(requestFilter, UsernamePasswordAuthenticationFilter.class);
 
-        http.cors(cors -> {
-            cors.configurationSource(request -> {
-                CorsConfiguration corsConfig = new CorsConfiguration();
-                corsConfig.addAllowedOrigin("*");
-                corsConfig.addAllowedMethod("*");
-                corsConfig.addAllowedHeader("*");
-                corsConfig.setAllowCredentials(true);
-                return corsConfig;
-            });
-        });
+
+        http.cors(cors -> cors.configurationSource(request -> {
+            CorsConfiguration corsConfig = new CorsConfiguration();
+            corsConfig.addAllowedOrigin("*");
+            corsConfig.applyPermitDefaultValues();
+            corsConfig.addAllowedMethod("GET");
+            corsConfig.addAllowedMethod("POST");
+            corsConfig.addAllowedMethod("PUT");
+            corsConfig.addAllowedMethod("DELETE");
+            corsConfig.addAllowedMethod(HttpMethod.OPTIONS);
+            corsConfig.addAllowedHeader("*");
+            corsConfig.setAllowCredentials(true);
+            return corsConfig;
+        }));
+
 
         return http.build();
     }

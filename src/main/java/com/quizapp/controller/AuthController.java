@@ -4,7 +4,9 @@ import com.quizapp.dto.AuthenticationResponse;
 import com.quizapp.dto.LoginDTO;
 import com.quizapp.dto.UserDTO;
 import com.quizapp.dto.UserResponseDTO;
+import com.quizapp.exception.UserRegistrationException;
 import com.quizapp.service.AuthService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -22,6 +24,7 @@ import java.io.IOException;
 @RestController
 @RequestMapping("/api/v1/auth/")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "bearerAuth")
 public class AuthController {
 
     private final AuthService authService;
@@ -29,12 +32,14 @@ public class AuthController {
 
     @PostMapping("signup")
     public ResponseEntity<?> signUp(@RequestBody UserDTO userDTO) {
-        UserResponseDTO createdUser = authService.signUp(userDTO);
-        if (createdUser == null){
-            return new ResponseEntity<>("User not created, try again later!", HttpStatus.BAD_REQUEST);
+        try {
+            UserResponseDTO createdUser = authService.signUp(userDTO);
+            return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
+        } catch (UserRegistrationException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
     }
+
     @PostMapping("login")
     public AuthenticationResponse login(@RequestBody LoginDTO loginDTO, HttpServletResponse response) throws BadCredentialsException, DisabledException, UsernameNotFoundException, IOException {
             return authService.login(loginDTO,response);

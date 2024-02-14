@@ -21,6 +21,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -58,7 +59,12 @@ public class AuthServiceImpl implements AuthService {
     public AuthenticationResponse login(LoginDTO loginDTO, HttpServletResponse response) throws IOException {
         try {
             Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginDTO.getUsername(), loginDTO.getPassword()));
-            User user = (User) authentication.getPrincipal();
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            User user = userRepository.findFirstByUsername(userDetails.getUsername());
+
+            if (user == null) {
+                throw new UsernameNotFoundException("User not found");
+            }
             String jwt = jwtUtil.generateToken(user);
             revokeAllToken(user);
             saveUserToken(user, jwt);
@@ -86,7 +92,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
 
-    private void saveUserToken(User savedUser, String jwtToken) {
+    protected void saveUserToken(User savedUser, String jwtToken) {
         Token token = Token.builder()
                 .token(jwtToken)
                 .users(savedUser)
@@ -97,8 +103,9 @@ public class AuthServiceImpl implements AuthService {
 
     }
 
-    private void revokeAllToken(User user) {
+    protected void revokeAllToken(User user) {
         List<Token> tokenList = tokenRepository.findAllValidTokenByUser(user.getId());
+        log.info("id: " + user.getId());
         if (tokenList.isEmpty()) {
             return;
         }

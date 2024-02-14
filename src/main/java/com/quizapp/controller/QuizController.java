@@ -3,9 +3,11 @@ package com.quizapp.controller;
 import com.quizapp.dto.UserAnswersDTO;
 import com.quizapp.dto.UserScoreDTO;
 import com.quizapp.entity.User;
+import com.quizapp.exception.AnswerEvaluationException;
 import com.quizapp.service.Jwt.UserDetailsServiceImpl;
 import com.quizapp.service.QuizService;
 import com.quizapp.service.UserScoreService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +21,7 @@ import java.util.Map;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/quiz/")
+@SecurityRequirement(name = "bearerAuth")
 public class QuizController {
 
     private final QuizService quizService;
@@ -29,14 +32,17 @@ public class QuizController {
 
     @PostMapping("submit-answers")
     public ResponseEntity<?> submitAnswers(@RequestBody UserAnswersDTO userAnswersDTO) {
+        try {
+            UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            User user = userDetailsService.loadUserByUsername(userDetails.getUsername());
 
-        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        User user = userDetailsService.loadUserByUsername(userDetails.getUsername());
+            Map<Long, String> userAnswers = userAnswersDTO.getUserAnswers();
+            int score = quizService.evaluateAnswers(userAnswers, user);
 
-        Map<Long, String> userAnswers = userAnswersDTO.getUserAnswers();
-        int score = quizService.evaluateAnswers(userAnswers, user);
-
-        return ResponseEntity.ok("Quiz submitted successfully. Your score: " + score);
+            return ResponseEntity.ok("Quiz submitted successfully. Your score: " + score);
+        } catch (Exception e) {
+            throw new AnswerEvaluationException("Failed to evaluate user answers");
+        }
     }
 
     @GetMapping("quiz-scores")
