@@ -9,7 +9,6 @@ import com.quizapp.entity.User;
 import com.quizapp.repository.TokenRepository;
 import com.quizapp.repository.UserRepository;
 import com.quizapp.service.AuthService;
-import com.quizapp.service.Jwt.UserDetailsServiceImpl;
 import com.quizapp.util.JwtUtil;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +21,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -37,7 +35,6 @@ public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;
     private final TokenRepository tokenRepository;
     private final AuthenticationManager authenticationManager;
-    private final UserDetailsServiceImpl userDetailsService;
     private final JwtUtil jwtUtil;
 
     @Override
@@ -108,7 +105,7 @@ public class AuthServiceImpl implements AuthService {
         for (Token token : tokenList) {
             token.setRevoked(true);
             token.setExpired(true);
-            tokenRepository.saveAll(tokenList);
+            tokenRepository.save(token);
         }
     }
 }
