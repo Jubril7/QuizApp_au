@@ -1,4 +1,4 @@
 package com.quizapp.exception;
 
-public class BadRequestException {
+public class BadRequestException extends RuntimeException {
 }
